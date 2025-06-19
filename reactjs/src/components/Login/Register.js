@@ -1,8 +1,8 @@
-// src/components/Login/Register.jsx
 import React, { useState } from 'react';
 import { registrarUsuario } from '../../services/RegistroConfiguracionInicial';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Register.css';
+
 export default function Register() {
   const [form, setForm] = useState({ UsuNom: '', UsuCor: '', UsuCon: '' });
   const [mensaje, setMensaje] = useState('');
@@ -24,7 +24,7 @@ export default function Register() {
   };
 
   return (
-    <div>
+    <div className="register-container">
       <h2>Registro</h2>
       <form onSubmit={handleSubmit}>
         <input name="UsuNom" placeholder="Nombre" onChange={handleChange} />
@@ -33,6 +33,7 @@ export default function Register() {
         <button type="submit">Registrarse</button>
       </form>
       <p>{mensaje}</p>
+      <p>¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link></p>
     </div>
   );
 }

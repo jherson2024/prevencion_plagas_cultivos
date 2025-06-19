@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './Temas.css';
 import './Aplicacion.css';
 import { useAuth } from '../../context/AuthContext';
-import {UserPlus,Command,Users,Map,LayoutDashboard,AlertTriangle,Thermometer,} from 'lucide-react';
+import {Brush,Command,Users,Map,LayoutDashboard,AlertTriangle,Thermometer,} from 'lucide-react';
 import RegistrarZonaGeografica from '../Mapa/RegistrarZonaGeografica';
 import GestionParcelas from '../Mapa/GestionParcelas';
+import InvitarColaborador from '../Usuarios/InvitarColaborador';
+import AsignarAccesos from '../Usuarios/AsignarAccesos';
+import SubirImagen from '../Diagnostico/SubirImagen';
+import CapturaDatosCampo from '../Diagnostico/CapturaDatosCampo';
 const submenus = {
   diagnostico: ['Subir imagen','Seleccionar ubicación','Resultados de IA','Correcciones manuales','Historial de capturas'],
   mapa: ['Mapa de calor','Capas','Línea de tiempo','Gestión de parcelas','Registrar zona geográfica'],
@@ -13,12 +18,17 @@ const submenus = {
   usuarios: ['Invitar colaborador','Asignar accesos','Historial de colaboraciones','Chat interno']
 };
 const Aplicacion = () => {
+  const [mostrarMenuConfig, setMostrarMenuConfig] = useState(false);
   const [seccionActiva, setSeccionActiva] = useState('diagnostico');
   const [contenidoActual, setContenidoActual] = useState(null);
   const [mostrarMenuUsuario, setMostrarMenuUsuario] = useState(false);
   const [mostrarModalInvitacion, setMostrarModalInvitacion] = useState(false);
   const [mostrarCentroAyuda, setMostrarCentroAyuda] = useState(false);
   const { user, logout } = useAuth();
+  const [tema, setTema] = useState('tema-base');
+  useEffect(() => {
+    document.body.className = tema; // Aplica la clase de tema al <body>
+  }, [tema]);
   const renderSubmenu = () => {
     const opciones = submenus[seccionActiva] || [];
     return (
@@ -37,8 +47,24 @@ const Aplicacion = () => {
   };
   const renderContenido = () => {
     switch (contenidoActual) {
+      case 'Personalizar':
+        return (
+          <div className="card">
+            <h3>Personalizar tema</h3>
+            <p>Selecciona un tema visual para la aplicación:</p>
+           <select value={tema} onChange={(e) => setTema(e.target.value)}>
+            <option value="tema-base">Base</option>
+            <option value="tema-verde">Verde</option>
+            <option value="tema-magenta">Magenta</option>
+            <option value="tema-azul">Azul</option>
+            <option value="tema-ámbar">Ámbar</option>
+            <option value="tema-gris">Gris</option>
+            <option value="tema-morado">Morado</option>
+           </select>
+          </div>
+        );
       case 'Subir imagen':
-        return <div className="card">Componente para subir imágenes desde el campo.</div>;
+        return <CapturaDatosCampo UsuCod={user.UsuCod}/>;
       case 'Seleccionar ubicación':
         return <div className="card">Vista para marcar coordenadas sobre el mapa.</div>;
       case 'Resultados de IA':
@@ -82,9 +108,9 @@ const Aplicacion = () => {
       case 'Predicciones recientes':
         return <div className="card">Listado de predicciones automáticas más recientes.</div>;
       case 'Invitar colaborador':
-        return <div className="card">Formulario para invitar colaboradores y técnicos.</div>;
+        return <InvitarColaborador UsuCod={user.UsuCod}/>;
       case 'Asignar accesos':
-        return <div className="card">Asignación de roles por parcela (colaborador, técnico).</div>;
+        return <AsignarAccesos UsuCod={user.UsuCod}/>;
       case 'Historial de colaboraciones':
         return <div className="card">Registro de contribuciones de otros usuarios.</div>;
       case 'Chat interno':
@@ -135,10 +161,10 @@ const Aplicacion = () => {
       <div className="main-area">
         <header className="header">
           <div className="header-icons">
-            <UserPlus
+            <Brush
               size={20}
-              title="Invitar usuario"
-              onClick={() => setMostrarModalInvitacion(true)}
+              title="Personalizar tema"
+              onClick={() => setMostrarMenuConfig(prev => !prev)}
               style={{ cursor: 'pointer' }}
             />
             <Command
@@ -165,16 +191,6 @@ const Aplicacion = () => {
           </div>
         </header>
         <main className="content">{renderContenido()}</main>
-        {/* Modales y menús */}
-        {mostrarModalInvitacion && (
-          <div className="modal">
-            <div className="modal-content">
-              <h3>Invitar a un usuario</h3>
-              <p>Funcionalidad para invitar a un nuevo usuario.</p>
-              <button onClick={() => setMostrarModalInvitacion(false)}>Cerrar</button>
-            </div>
-          </div>
-        )}
         {mostrarCentroAyuda && (
           <div className="modal">
             <div className="modal-content">
@@ -192,6 +208,26 @@ const Aplicacion = () => {
             </ul>
           </div>
         )}
+        {mostrarMenuConfig && (
+        <select
+          id="tema-select"
+          value={tema}
+          onChange={(e) => {
+            setTema(e.target.value);
+            setMostrarMenuConfig(false);
+          }}
+        >
+          <option value="tema-base">Base</option>
+          <option value="tema-verde">Verde</option>
+          <option value="tema-magenta">Magenta</option>
+          <option value="tema-azul">Azul</option>
+          <option value="tema-ámbar">Ámbar</option>
+          <option value="tema-gris">Gris</option>
+          <option value="tema-morado">Morado</option>
+        </select>
+
+)}
+
       </div>
     </div>
   );

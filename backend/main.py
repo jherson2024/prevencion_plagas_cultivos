@@ -4,6 +4,8 @@ from routes import router as routes_app  # Importa el objeto app con las rutas
 from fastapi.staticfiles import StaticFiles
 from endpoints.RegistroConfiguracionInicial import router as ruta1_router
 from endpoints.ZonaTrabajoMapeo import router as ruta2_router
+from endpoints.AccesosColaborativos import router as ruta3_router
+from endpoints.CapturaDatosCampo import router as ruta4_router
 import os
 
 app = FastAPI(
@@ -24,3 +26,5 @@ app.add_middleware(
 # Incluir rutas
 app.include_router(ruta1_router)
 app.include_router(ruta2_router)
+app.include_router(ruta3_router)
+app.include_router(ruta4_router)

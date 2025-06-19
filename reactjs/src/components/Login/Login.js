@@ -46,7 +46,7 @@ export default function Login() {
   };
 
   return (
-    <div>
+     <div className="login-container">
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -70,11 +70,11 @@ export default function Login() {
       <p>¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link></p>
 
       {redirectFail && (
-        <div style={{ marginTop: '20px', padding: '15px', border: '1px solid #f00', background: '#fee', color: '#900' }}>
-          <strong>⚠ No se pudo redirigir a <code>/aplicacion</code>.</strong>
-          <p>Verifica que la ruta exista en tus <code>Routes</code> y que el usuario haya sido autenticado correctamente.</p>
-        </div>
-      )}
+  <div className="redirect-warning">
+    <strong>⚠ No se pudo redirigir a <code>/aplicacion</code>.</strong>
+    <p>Verifica que la ruta exista en tus <code>Routes</code> y que el usuario haya sido autenticado correctamente.</p>
+  </div>
+)}
     </div>
   );
 }

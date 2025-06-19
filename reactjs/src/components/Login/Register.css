@@ -1,49 +1,66 @@
-/* src/components/Login/Register.css */
+/* Register.css - Estilos encapsulados para el formulario de registro */
 
 .register-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  font-family: sans-serif;
-  padding: 16px;
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 2rem;
+  border: 1px solid #000;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  color: #000;
 }
 
 .register-container h2 {
-  margin-bottom: 24px;
+  text-align: center;
   font-size: 24px;
+  margin-bottom: 1.5rem;
 }
 
-.register-form {
+.register-container form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 320px;
+  gap: 1rem;
 }
 
-.register-form input {
+.register-container input {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #000;
   border-radius: 4px;
+  background-color: #fff;
+  color: #000;
 }
 
-.register-form button {
+.register-container input::placeholder {
+  color: #666;
+}
+
+.register-container button {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #aaa;
+  border: 1px solid #000;
   border-radius: 4px;
+  background-color: #000;
+  color: #fff;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-.register-form button:hover {
-  opacity: 0.9;
+.register-container button:hover {
+  background-color: #333;
 }
 
-.register-message {
-  margin-top: 12px;
-  font-size: 14px;
+.register-container p {
   text-align: center;
+  font-size: 14px;
+}
+
+.register-container a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.register-container a:hover {
+  color: #333;
 }

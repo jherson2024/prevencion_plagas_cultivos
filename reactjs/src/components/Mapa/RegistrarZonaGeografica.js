@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../../css/styles.css'
+import '../../css/styles.css';
 import {
   crearZona,
   listarZonas,
@@ -12,9 +12,11 @@ const GestionZonasGeograficas = () => {
   const [form, setForm] = useState({ ZonNom: '', ZonTipZon: '', ZonReg: '' });
   const [editando, setEditando] = useState(null);
   const [mensaje, setMensaje] = useState('');
+
   useEffect(() => {
     cargarZonas();
   }, []);
+
   const cargarZonas = async () => {
     const data = await listarZonas();
     setZonas(data);
@@ -50,6 +52,12 @@ const GestionZonasGeograficas = () => {
       ZonReg: zona.ZonReg
     });
     setEditando(zona.ZonCod);
+  };
+
+  const handleCancelar = () => {
+    setForm({ ZonNom: '', ZonTipZon: '', ZonReg: '' });
+    setEditando(null);
+    setMensaje('');
   };
 
   const handleEliminar = async (ZonCod) => {
@@ -93,12 +101,23 @@ const GestionZonasGeograficas = () => {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
-        <button
-          type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          {editando !== null ? 'Modificar Zona' : 'Registrar Zona'}
-        </button>
+        <div className="flex space-x-2">
+          <button
+            type="submit"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            {editando !== null ? 'Modificar Zona' : 'Registrar Zona'}
+          </button>
+          {editando !== null && (
+            <button
+              type="button"
+              onClick={handleCancelar}
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            >
+              Cancelar
+            </button>
+          )}
+        </div>
       </form>
 
       {/* Tabla de zonas */}
