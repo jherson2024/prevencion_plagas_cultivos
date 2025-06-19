@@ -12,7 +12,7 @@ async def login(request: Request):
     UsuCon = body.get("UsuCon")
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM USUARIO WHERE UsuCor = %s AND UsuCon = %s AND UsuEstReg = 'A'", (UsuCor, UsuCon))
+    cursor.execute("SELECT * FROM usuario WHERE UsuCor = %s AND UsuCon = %s AND UsuEstReg = 'A'", (UsuCor, UsuCon))
     usuario = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -28,7 +28,7 @@ async def registrar_usuario(request: Request):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO USUARIO (UsuNom, UsuCor, UsuCon, UsuFecReg, UsuEstReg)
+        INSERT INTO usuario (UsuNom, UsuCor, UsuCon, UsuFecReg, UsuEstReg)
         VALUES (%s, %s, %s, %s, %s)
     """, (UsuNom, UsuCor, UsuCon, date.today(), "A"))
     conn.commit()
