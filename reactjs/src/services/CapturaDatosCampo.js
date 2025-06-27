@@ -85,3 +85,10 @@ export const listarSyncLogs = async (usuarioId) => {
   const response = await api.get(`/sync_log/listar?usuario=${usuarioId}`);
   return response.data;
 };
+// 🤖 Ejecutar detección por IA
+export const detectarPlaga = async (datos) => {
+ console.log(datos)
+  const response = await api.post('/detecciones/listar', datos);
+	
+  return response.data;
+};

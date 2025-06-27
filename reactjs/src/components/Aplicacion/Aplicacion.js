@@ -9,6 +9,8 @@ import InvitarColaborador from '../Usuarios/InvitarColaborador';
 import AsignarAccesos from '../Usuarios/AsignarAccesos';
 import SubirImagen from '../Diagnostico/SubirImagen';
 import CapturaDatosCampo from '../Diagnostico/CapturaDatosCampo';
+import ResultadosIA from '../Diagnostico/ResultadosIA';
+
 const submenus = {
   diagnostico: ['Subir imagen','Seleccionar ubicación','Resultados de IA','Correcciones manuales','Historial de capturas'],
   mapa: ['Mapa de calor','Capas','Línea de tiempo','Gestión de parcelas','Registrar zona geográfica'],
@@ -68,7 +70,7 @@ const Aplicacion = () => {
       case 'Seleccionar ubicación':
         return <div className="card">Vista para marcar coordenadas sobre el mapa.</div>;
       case 'Resultados de IA':
-        return <div className="card">Resultados del análisis automático (PlagasNet v3.1).</div>;
+        return <ResultadosIA UsuCod={user.UsuCod}/>;
       case 'Correcciones manuales':
         return <div className="card">Interfaz para validar o corregir diagnóstico.</div>;
       case 'Historial de capturas':

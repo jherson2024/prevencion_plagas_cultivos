@@ -3,6 +3,10 @@ from datetime import date
 from database import get_connection
 import os
 from uuid import uuid4
+from fastapi import Query
+from .chatgpt import detectar_chatgpt
+from .gemini import detectar_gemini
+from .deepseck import detectar_deepseck
 
 router = APIRouter()
 IMAGENES_DIR = "static/imagenes"
@@ -184,6 +188,8 @@ async def listar_imagenes_por_usuario(UsuCod: int):
     cursor.close()
     conn.close()
     return imagenes
+
+
 @router.get("/captura/listar")
 async def listar_capturas(usu: int = None, parcela: int = None):
     conn = get_connection()
@@ -212,3 +218,83 @@ async def listar_capturas(usu: int = None, parcela: int = None):
     cursor.close()
     conn.close()
     return capturas
+
+
+@router.post("/detecciones/listar")
+async def listar_deteccion_por_imagen(request: Request):
+    datos = await request.json()
+    ima_cod = datos.get("cap_cod")
+    ia_nombre = datos.get("ia_nombre")
+
+    if not ima_cod or not ia_nombre:
+        raise HTTPException(status_code=400, detail="Faltan datos requeridos")
+
+    if ia_nombre not in ["chatgpt", "gemini", "deepseck"]:
+        raise HTTPException(status_code=400, detail="IA no válida")
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # 1. Obtener URL de imagen
+    cursor.execute("SELECT ImaUrl FROM imagen WHERE ImaCod = %s AND ImaEstReg = 'A'", (ima_cod,))
+    imagen = cursor.fetchone()
+    if not imagen:
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+
+    ima_url = imagen["ImaUrl"]
+
+    # 2. Verificar si ya existe detección con esa IA
+    cursor.execute("""
+        SELECT * FROM deteccion
+        WHERE ImaCod = %s AND IauUse = %s
+    """, (ima_cod, ia_nombre))
+    deteccion = cursor.fetchone()
+
+    if deteccion:
+        print("ya hay una deteccion anterior")
+        resultado = {
+            "ImaUrl": ima_url,
+            "PlaDet": deteccion["PlaDet"],
+            "NomPla": deteccion["NomPla"],
+            "SevPla": deteccion["SevPla"],
+            "AccRec": deteccion["AccRec"]
+        }
+        print(resultado)
+    else:
+        print("no habia deteccion anterior")
+        ruta_local = "." + ima_url
+        if ia_nombre == "chatgpt":
+            resultado_ia = detectar_chatgpt(ruta_local)
+        elif ia_nombre == "gemini":
+            resultado_ia = detectar_gemini(ruta_local)
+        else:
+            resultado_ia = detectar_deepseck(ruta_local)
+
+        # Guardar en base de datos
+        cursor.execute("""
+            REPLACE INTO deteccion (
+                ImaCod, PlaDet, NomPla, SevPla, AccRec, IauUse
+            ) VALUES (%s, %s, %s, %s, %s, %s)
+        """, (
+            ima_cod,
+            resultado_ia["plaga_detectada"],
+            resultado_ia.get("nombre_plaga"),
+            resultado_ia.get("severidad"),
+            resultado_ia.get("acciones_recomendadas"),
+            ia_nombre
+        ))
+        conn.commit()
+
+        resultado = {
+            "ImaUrl": ima_url,
+            "PlaDet": resultado_ia["plaga_detectada"],
+            "NomPla": resultado_ia.get("nombre_plaga"),
+            "SevPla": resultado_ia.get("severidad"),
+            "AccRec": resultado_ia.get("acciones_recomendadas")
+        }
+
+    cursor.close()
+    conn.close()
+    return resultado
