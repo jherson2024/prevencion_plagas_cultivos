@@ -245,3 +245,14 @@ CREATE TABLE etiqueta_manual (
     FOREIGN KEY (EtiDiaCod) REFERENCES diagnostico(DiaCod),
     FOREIGN KEY (EtiUsuCod) REFERENCES usuario(UsuCod)
 );
+
+CREATE TABLE deteccion (
+    ImaCod INT NOT NULL,
+    PlaDet BOOLEAN NOT NULL,
+    NomPla VARCHAR(100),           -- nombre de la plaga (puede ser NULL)
+    SevPla VARCHAR(50),            -- severidad (puede ser NULL)
+    AccRec TEXT,                   -- acciones recomendadas (puede ser NULL)
+    IauUse VARCHAR(100),           -- IA utilizada (no puede ser NULL)
+
+    PRIMARY KEY (ImaCod)
+);
